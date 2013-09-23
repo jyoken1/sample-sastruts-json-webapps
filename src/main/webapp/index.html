@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=5; IE=7; IE=8; IE=9" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Content-Script-Type" content="text/javascript" />
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.1/themes/base/jquery-ui.css" type="text/css" />
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.js" charset="utf-8">
+    </script>
+    <script type="text/javascript" src="http://code.jquery.com/ui/1.10.1/jquery-ui.js" charset="utf-8">
+    </script>
+    <script type="text/javascript" charset="utf-8">
+    // <![CDATA[
+        $(function() {
+            $('#post :submit').click(function() {
+                var url = 'add/submit/';
+                var jsondata = {
+                    arg1: $('#post :text[name="arg1"]').val(),
+                    arg2: $('#post :text[name="arg2"]').val()
+                };
+
+                $.ajax({
+                    type: 'POST',
+                    dataType: 'json',
+                    url: url,
+                    data: JSON.stringify(jsondata),
+                    contentType: 'application/json; charset=utf-8',
+                    success: function(data, dataType) {
+                        $('#result').text(data.result);
+                        if (data.messages && data.messages.length > 0) {
+                            var $dialog = $('<div><ul></ul></div>');
+                            data.messages.forEach(function(value) {
+                                $dialog.children('ul').append('<li>' + value + '</li>');
+                            });
+                            $dialog.dialog({
+                                modal: true,
+                                title: 'エラー',
+                                resizable: false,
+                                width: 600,
+                                buttons: {
+                                    'OK': function() {
+                                        $(this).dialog('close');
+                                    }
+                                }
+                            });
+                        }
+                    },
+                    error: function(xhr, textStatus, errorThrown) {
+                        $('#result').text('');
+                        var $dialog = $('<div><ul></ul></div>');
+                        $dialog.children('ul').append('<li>' + textStatus + '</li>');
+                        $dialog.dialog({
+                            modal: true,
+                            title: 'エラー',
+                            resizable: false,
+                            width: 100,
+                            buttons: {
+                                'OK': function() {
+                                    $(this).dialog('close');
+                                }
+                            }
+                        });
+                    }
+                });
+            })
+        });
+    // ]]>
+    </script>
+    <title>Add</title>
+</head>
+<body>
+<div id="post">
+    <input type="text" name="arg1" value="" tabindex="1" /> + <input type="text" name="arg2" value="" tabindex="2" />
+    = <span id="result"></span><br />
+    <input type="submit" name="submit" value="サブミット" tabindex="3" />
+</div>
+</body>
+</html>

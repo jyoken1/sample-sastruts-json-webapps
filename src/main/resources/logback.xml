@@ -1,0 +1,24 @@
+<configuration>
+    <appender name="C" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%-5level %d{HH:mm:ss.SSS} [%thread] %msg%n</pattern>
+        </encoder>
+        <immediateFlush>true</immediateFlush>
+    </appender>
+
+    <appender name="A1" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="org.seasar" additivity="false">
+        <level value="DEBUG" />
+        <appender-ref ref="C" />
+    </logger>
+
+    <root>
+        <level value="INFO" />
+        <appender-ref ref="A1" />
+    </root>
+</configuration>
