@@ -1,4 +1,4 @@
-apply plugin: 'java'
+apply plugin: 'groovy'
 apply plugin: 'war'
 
 apply plugin: 'idea'
@@ -57,11 +57,16 @@ repositories {
         name 'JBoss Repo'
         url 'https://repository.jboss.org/nexus/content/repositories/releases'
     }
+    maven {
+        name 'spock-seasar'
+        url 'https://bitbucket.org/shiena/mvn-repo/raw/tip/'
+    }
 }
 
 configurations {
     all*.exclude module: 'commons-logging'
     all*.exclude module: 'log4j'
+    all*.exclude module: 'junit'
 }
 
 dependencies {
@@ -108,7 +113,7 @@ dependencies {
 
     testCompile (
         // Removed from war
-        [group: 'junit', name: 'junit', version: '3.8.2'],
+        [group: 'org.shiena', name: 'spock-seasar', version: '0.0.1'],
         [group: 'org.easymock', name: 'easymock', version: '2.2'],
     )
 
