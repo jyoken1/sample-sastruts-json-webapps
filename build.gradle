@@ -1,0 +1,116 @@
+apply plugin: 'java'
+apply plugin: 'war'
+
+apply plugin: 'idea'
+apply plugin: 'eclipse-wtp'
+
+group = 'sample.sastruts.json'
+version = '1.0'
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.7'
+}
+
+def defaultEncoding = 'UTF-8'
+[compileJava, compileTestJava, javadoc]*.options*.encoding = defaultEncoding
+
+def jdkVersion = '1.7'
+sourceCompatibility = jdkVersion
+targetCompatibility = jdkVersion
+
+task sourceJar(type: Jar, dependsOn:classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives sourceJar
+}
+
+javadoc {
+    options.charSet = defaultEncoding
+}
+
+idea {
+    pathVariables 'GRADLE_USER_HOME': gradle.gradleUserHomeDir
+    project {
+        languageLevel = jdkVersion
+    }
+}
+
+eclipse {
+    pathVariables 'GRADLE_USER_HOME': gradle.gradleUserHomeDir
+    classpath {
+        containers = [
+            'org.eclipse.jdt.launching.JRE_CONTAINER',
+        ]
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        name 'The Seasar Foundation Maven2 Repository'
+        url 'http://maven.seasar.org/maven2'
+    }
+    maven {
+        name 'JBoss Repo'
+        url 'https://repository.jboss.org/nexus/content/repositories/releases'
+    }
+}
+
+configurations {
+    all*.exclude module: 'commons-logging'
+    all*.exclude module: 'log4j'
+}
+
+dependencies {
+    compile (
+        // Jackson
+        [group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.1.3'],
+
+        // Bean Validator
+        [group: 'org.hibernate', name: 'hibernate-validator', version: '4.3.1.Final'],
+
+        // logback
+        [group: 'org.slf4j', name: 'jcl-over-slf4j', version: '1.7.2'],
+        [group: 'ch.qos.logback', name: 'logback-classic', version: '1.0.9'],
+
+        [group: 'jstl', name: 'jstl', version: '1.1.2'],
+        [group: 'taglibs', name: 'standard', version: '1.1.2'],
+        [group: 'commons-collections', name: 'commons-collections', version: '3.1'],
+        [group: 'commons-el', name: 'commons-el', version: '1.0'],
+        [group: 'commons-fileupload', name: 'commons-fileupload', version: '1.2'],
+        [group: 'commons-io', name: 'commons-io', version: '1.3.2'],
+        [group: 'commons-validator', name: 'commons-validator', version: '1.2.0'],
+
+        // SAStruts
+        [group: 'org.seasar.sastruts', name: 'sa-struts', version: '1.0.4-sp9'],
+
+        // Geronimo
+        [group: 'org.apache.geronimo.specs', name: 'geronimo-annotation_1.0_spec', version: '1.0'],
+        [group: 'org.apache.geronimo.specs', name: 'geronimo-ejb_3.0_spec', version: '1.0'],
+        [group: 'org.apache.geronimo.specs', name: 'geronimo-interceptor_3.0_spec', version: '1.0'],
+        [group: 'org.apache.geronimo.specs', name: 'geronimo-jpa_3.0_spec', version: '1.0'],
+        [group: 'org.apache.geronimo.specs', name: 'geronimo-jta_1.1_spec', version: '1.0'],
+    )
+
+    providedCompile (
+        // If you want to use J2EE 1.4 server(not Tomcat), 
+        // add geronimo-jta_1.1_spec-1.0-tsr.jar
+        [group: 'org.apache.geronimo.specs', name: 'geronimo-jsp_2.0_spec', version: '1.0'],
+        [group: 'org.apache.geronimo.specs', name: 'geronimo-servlet_2.4_spec', version: '1.0'],
+
+        // Removed from war
+        [group: 'xalan', name: 'xalan', version: '2.5.1'],
+        [group: 'xml-apis', name: 'xml-apis', version: '2.0.2'],
+    )
+
+    testCompile (
+        // Removed from war
+        [group: 'junit', name: 'junit', version: '3.8.2'],
+        [group: 'org.easymock', name: 'easymock', version: '2.2'],
+    )
+
+}
+

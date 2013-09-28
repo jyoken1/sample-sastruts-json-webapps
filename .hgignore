@@ -1,7 +1,8 @@
 syntax: glob
 
-# for Maven
-target/
+# for Gradle
+.gradle/
+build/
 
 # for Eclipse
 .project
